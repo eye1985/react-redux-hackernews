@@ -1,0 +1,28 @@
+#app > div {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
+  main {
+    flex: 1 0 auto;
+  }
+
+.hnLogo{
+    border: 4px solid #ffffff;
+    padding: 0 13px;
+    font-size: 46px;
+    margin: 4px;
+    line-height: 48px
+}
+
+.collection-item:hover{
+    background-color:#ffe082 !important;
+}
+
+.no-padding-top{
+    padding-top:0 !important;
+}
+.no-top-margin{
+    margin-top:0 !important;
+}
