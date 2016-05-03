@@ -1,3 +1,5 @@
+var webpack = require('webpack');
+
 module.exports = {
     entry:['./node_modules/jquery/dist/jquery.js','./node_modules/materialize-css/dist/js/materialize.js','./index.js'],
     context:__dirname,
@@ -26,4 +28,12 @@ module.exports = {
         hot:true,
         inline:true
     }
+    // ,
+    // plugins: [
+    //     new webpack.DefinePlugin({
+    //         'process.env':{
+    //             'NODE_ENV':JSON.stringify('production')
+    //         }
+    //     })
+    // ]
 };
