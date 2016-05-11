@@ -1,11 +1,24 @@
 import fetch from 'isomorphic-fetch';
+import {fetchTopStories} from './fetchActions';
 //Async Actions for fetching
 export const FETCH_REQUEST_START = 'FETCH_REQUEST_START';
 export const FETCH_REQUEST_SUCCESS = 'FETCH_REQUEST_SUCCESS';
 export const FETCH_REQUEST_FAILED = 'FETCH_REQUEST_FAILED';
 export const PREPARE_POST_CONTAINERS = 'PREPARE_POST_CONTAINERS';
 
+export const UPDATE_POSTS = 'UPDATE_POSTS';
 export const RENDER_POST = 'RENDER_POST';
+export const RESET_PAGE = 'RESET_PAGE';
+
+export const AUTO_UPDATE_OFF = 'AUTO_UPDATE_OFF';
+export const AUTO_UPDATE_ON = 'AUTO_UPDATE_ON';
+
+export function updatePosts(newsList){
+    return {
+        type:UPDATE_POSTS,
+        newsList
+    }
+}
 
 export function renderPost(newsList){
     return {
@@ -14,10 +27,10 @@ export function renderPost(newsList){
     }
 }
 
-function fetchStart(postByHnews){
+function fetchStart(fetchStatus){
     return {
         type:FETCH_REQUEST_START,
-        postByHnews
+        fetchStatus
     }
 }
 
@@ -27,10 +40,18 @@ function fetchFinish(){
     }
 }
 
-function preparePostContainers(postByHnews,unfetchedList){
+function preparePostContainers(fetchedList,unfetchedList){
     return {
         type:PREPARE_POST_CONTAINERS,
-        postByHnews,
+        fetchedList,
+        unfetchedList
+    }
+}
+
+function resetPage(fetchedList,unfetchedList){
+    return {
+        type:RESET_PAGE,
+        fetchedList,
         unfetchedList
     }
 }
@@ -70,14 +91,14 @@ export function showMorePosts(state){
 }
 
 //thunk action creator
-export function fetchPosts(state){
-    return function(dispatch){
+export function fetchPosts(state,numberOfFetch){
+    return (dispatch)=>{
         dispatch(fetchStart(state))
         fetch('https://hacker-news.firebaseio.com/v0/topstories.json')
             .then(response => response.json())
             .then(json => {
-                const topTenNewsIds = json.slice(0,10);
-                const unfetchedList = json.slice(10);
+                const topTenNewsIds = json.slice(0,numberOfFetch);
+                const unfetchedList = json.slice(numberOfFetch);
 
                 dispatch(preparePostContainers(topTenNewsIds,unfetchedList));
                 return topTenNewsIds;
@@ -89,5 +110,31 @@ export function fetchPosts(state){
                     dispatch(fetchFinish());
                 })
             });
+    }
+}
+
+export function reRenderPage(fetchState,newsState){
+    return (dispatch)=>{
+        dispatch(fetchStart(fetchState));
+        fetchTopStories(10)
+            .then((listOfFetchedStories)=>{
+                dispatch(resetPage(listOfFetchedStories.fetched,listOfFetchedStories.unfetched));
+                fetchInBulk(listOfFetchedStories.fetched,(fetchedStory)=>{
+                    dispatch(renderPost([fetchedStory]));
+                }).then(()=>{
+                    dispatch(fetchFinish());
+                })
+            })
+    }
+}
+
+export function updateEvery(bool,interval){
+    const updateTrigger = (bool)=>{
+        return bool?AUTO_UPDATE_ON:AUTO_UPDATE_OFF
+    };
+
+    return {
+        type:updateTrigger(bool),
+        interval
     }
 }
