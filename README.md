@@ -1,6 +1,6 @@
 #react-redux-hackernews
 
-A quick web-app hacker-news webapp. The main purpose for this app is to get familiar with React/Redux.
+A hacker-news webapp. The main purpose for this app is to get familiar with React/Redux.
 
 ##Build with
 - Babel 6
