@@ -1,10 +1,18 @@
 #react-redux-hackernews
 
-Quick hacker news app using their rest-api, built with react-redux.
+A quick web-app hacker-news webapp. The main purpose for this app is to get familiar with React/Redux.
+
+##Build with
+- Babel 6
+- ES6
+- React
+- React-redux
+- Webpack
+- Material CSS
 
 ##How to run
 
 `npm i`  
 `npm start`
 
-[Demo](http://hackernews.kissr.com/)
+[Demo](https://vivid-heat-6972.firebaseapp.com/)
