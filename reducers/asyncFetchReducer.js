@@ -101,12 +101,8 @@ function viewPost(state=newsState,action){
             return Object.assign({},state,{
                 newsList:copyOfNewList
             })
-
         case UPDATE_POSTS:
-            console.log(state,'update state');
-
-
-            return state;
+            return Object.assign({},state,action.viewPost);
         default:
             return state;
     }

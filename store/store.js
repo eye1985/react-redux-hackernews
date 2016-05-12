@@ -11,8 +11,8 @@ if(process.env['NODE_ENV'] !== 'production'){
         rootReducer,
         applyMiddleware(
             thunkMiddleware
-            // ,
-            // loggerMiddleware
+            ,
+            loggerMiddleware
         )
     );
 }else{
@@ -25,5 +25,14 @@ if(process.env['NODE_ENV'] !== 'production'){
 }
 
 export default function configureStore(){
+
+    if (module.hot) {
+       // Enable Webpack hot module replacement for reducers
+       module.hot.accept('../reducers/asyncFetchReducer', () => {
+         const nextRootReducer = require('../reducers/asyncFetchReducer');
+         store.replaceReducer(nextRootReducer);
+       });
+     }
+    
     return store;
 };

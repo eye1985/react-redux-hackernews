@@ -33,35 +33,33 @@ export function bulkFetchSingle(arrayOfIds,callback){
 
 
 export function bulkFetch(arrayOfIds) {
-    let stories = {};
+    let fetchTool = (maxNum,res)=>{
+        let stories = {};
+        let counter = 0;
+
+        return {
+            addStory:(id,story)=>{
+                stories[id] = story;
+                counter++;
+
+                if(counter === maxNum){
+                    res(stories);
+                }
+            },
+            getStoriesCount:()=>counter
+        }
+    };
 
     const fetchPromise = new Promise((res,rej)=>{
-
-        arrayOfIds[0]
+        const storyCounter = fetchTool(arrayOfIds.length,res);
 
         arrayOfIds.forEach((id,pos)=>{
             let fetchUrl = 'https://hacker-news.firebaseio.com/v0/item/'+ id +'.json?print=pretty';
             fetch(fetchUrl)
                 .then(response => response.json())
                 .then(json =>{
-
-                    if(json === undefined){
-                        console.warn(id,'undefined here');
-                    }
-                    stories[id]=json;
-
-                    if(pos+1 === arrayOfIds.length){
-                        return stories;
-                    }
-                })
-                .then((preparedStories)=>{
-
-                    let counter=0;
-                    for(var key in preparedStories){
-                        counter++;
-                    }
-                    console.log(counter);
-                })
+                    storyCounter.addStory(id,json);
+                });
         });
     });
 

@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch';
 import {fetchTopStories,bulkFetch,bulkFetchSingle} from './fetchActions';
+
 //Async Actions for fetching
 export const FETCH_REQUEST_START = 'FETCH_REQUEST_START';
 export const FETCH_REQUEST_SUCCESS = 'FETCH_REQUEST_SUCCESS';
@@ -57,11 +58,9 @@ function resetPage(fetchedList,unfetchedList){
 }
 
 function sortStories(storiesArr,fetchedStories){
-    let result={};
+    let result=[];
     storiesArr.forEach((id,pos)=>{
-        if(fetchedStories[id] === undefined){
-            console.warn(id,'sort undefined');
-        }
+        result.push(fetchedStories[id]);
     });
 
     return result;
@@ -75,7 +74,7 @@ export function showMorePosts(state){
         dispatch(fetchStart(state));
         dispatch(preparePostContainers(nextWaveOfNewsList,unfetchedList));
 
-        fetchInBulk(nextWaveOfNewsList,(json)=>{
+        bulkFetchSingle(nextWaveOfNewsList,(json)=>{
             dispatch(renderPost([json]))
         }).then(()=>{
             dispatch(fetchFinish());
@@ -114,17 +113,12 @@ export function reRenderPage(fetchState,newsState){
                 // dispatch(resetPage(listOfFetchedStories.fetched,listOfFetchedStories.unfetched));
                 bulkFetch(listOfFetchedStories.fetched)
                     .then((data)=>{
-                        // let counter = 0;
-                        // for(var key in data){
-                        //     counter++;
-                        // }
-                        // console.log(counter);
-
                         const result = {
                             newsList:sortStories(listOfFetchedStories.fetched,data),
                             unfetchedList:listOfFetchedStories.unfetched
                         }
 
+                        dispatch(updatePosts(result))
                         dispatch(fetchFinish());
                     })
             })
