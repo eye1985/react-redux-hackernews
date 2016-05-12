@@ -1,20 +1,15 @@
 import React,{Component} from 'react';
 import {connect} from 'react-redux';
-import {fetchPosts,showMorePosts,updatePosts,reRenderPage} from '../actions/action';
+import {showMorePosts,updatePosts,reRenderPage} from '../actions/action';
 import NewsItem from '../components/newsItem';
-import ProgressBar from '../components/progress';
 
 class NewsList extends Component{
     componentDidMount (){
-        this.props.dispatch(fetchPosts(this.props.fetchStatus,10));
+        this.props.dispatch(reRenderPage(this.props.fetchStatus,this.props.viewPost));
     }
     render(){
-        const {isFetching,isFailed,isComplete} = this.props.fetchStatus;
-        let progressBar = (isFetching)?<ProgressBar />:undefined;
-        
         return(
             <div>
-                {progressBar}
                 <div className="container">
                     <div className="collection">
                         {

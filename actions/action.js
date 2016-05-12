@@ -83,28 +83,6 @@ export function showMorePosts(state){
 }
 
 //thunk action creator
-export function fetchPosts(state,numberOfFetch){
-    return (dispatch)=>{
-        dispatch(fetchStart(state))
-        fetch('https://hacker-news.firebaseio.com/v0/topstories.json')
-            .then(response => response.json())
-            .then(json => {
-                const topTenNewsIds = json.slice(0,numberOfFetch);
-                const unfetchedList = json.slice(numberOfFetch);
-
-                dispatch(preparePostContainers(topTenNewsIds,unfetchedList));
-                return topTenNewsIds;
-            })
-            .then((topTenNewsIds)=>{
-                bulkFetchSingle(topTenNewsIds,(json)=>{
-                    dispatch(renderPost([json]));
-                }).then(()=>{
-                    dispatch(fetchFinish());
-                })
-            });
-    }
-}
-
 export function reRenderPage(fetchState,newsState){
     return (dispatch)=>{
         dispatch(fetchStart(fetchState));
