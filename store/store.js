@@ -10,8 +10,9 @@ if(process.env['NODE_ENV'] !== 'production'){
     store = createStore(
         rootReducer,
         applyMiddleware(
-            thunkMiddleware,
-            loggerMiddleware
+            thunkMiddleware
+            // ,
+            // loggerMiddleware
         )
     );
 }else{

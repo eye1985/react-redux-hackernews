@@ -1,5 +1,5 @@
 import fetch from 'isomorphic-fetch';
-import {fetchTopStories} from './fetchActions';
+import {fetchTopStories,bulkFetch,bulkFetchSingle} from './fetchActions';
 //Async Actions for fetching
 export const FETCH_REQUEST_START = 'FETCH_REQUEST_START';
 export const FETCH_REQUEST_SUCCESS = 'FETCH_REQUEST_SUCCESS';
@@ -13,10 +13,10 @@ export const RESET_PAGE = 'RESET_PAGE';
 export const AUTO_UPDATE_OFF = 'AUTO_UPDATE_OFF';
 export const AUTO_UPDATE_ON = 'AUTO_UPDATE_ON';
 
-export function updatePosts(newsList){
+export function updatePosts(viewPost){
     return {
         type:UPDATE_POSTS,
-        newsList
+        viewPost
     }
 }
 
@@ -56,22 +56,15 @@ function resetPage(fetchedList,unfetchedList){
     }
 }
 
-function fetchInBulk(arrayOfIds,callback){
-    const fetchPromise = new Promise((res,rej)=>{
-        arrayOfIds.map((id,pos)=>{
-            let fetchUrl = 'https://hacker-news.firebaseio.com/v0/item/'+ id +'.json?print=pretty';
-            fetch(fetchUrl)
-                .then(response => response.json())
-                .then(json =>{
-                    callback(json);
-                    if(pos+1 === arrayOfIds.length){
-                        res('finished');
-                    }
-                })
-        });
+function sortStories(storiesArr,fetchedStories){
+    let result={};
+    storiesArr.forEach((id,pos)=>{
+        if(fetchedStories[id] === undefined){
+            console.warn(id,'sort undefined');
+        }
     });
 
-    return fetchPromise;
+    return result;
 }
 
 export function showMorePosts(state){
@@ -104,7 +97,7 @@ export function fetchPosts(state,numberOfFetch){
                 return topTenNewsIds;
             })
             .then((topTenNewsIds)=>{
-                fetchInBulk(topTenNewsIds,(json)=>{
+                bulkFetchSingle(topTenNewsIds,(json)=>{
                     dispatch(renderPost([json]));
                 }).then(()=>{
                     dispatch(fetchFinish());
@@ -118,12 +111,22 @@ export function reRenderPage(fetchState,newsState){
         dispatch(fetchStart(fetchState));
         fetchTopStories(10)
             .then((listOfFetchedStories)=>{
-                dispatch(resetPage(listOfFetchedStories.fetched,listOfFetchedStories.unfetched));
-                fetchInBulk(listOfFetchedStories.fetched,(fetchedStory)=>{
-                    dispatch(renderPost([fetchedStory]));
-                }).then(()=>{
-                    dispatch(fetchFinish());
-                })
+                // dispatch(resetPage(listOfFetchedStories.fetched,listOfFetchedStories.unfetched));
+                bulkFetch(listOfFetchedStories.fetched)
+                    .then((data)=>{
+                        // let counter = 0;
+                        // for(var key in data){
+                        //     counter++;
+                        // }
+                        // console.log(counter);
+
+                        const result = {
+                            newsList:sortStories(listOfFetchedStories.fetched,data),
+                            unfetchedList:listOfFetchedStories.unfetched
+                        }
+
+                        dispatch(fetchFinish());
+                    })
             })
     }
 }
