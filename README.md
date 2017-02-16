@@ -1,6 +1,7 @@
 #react-redux-hackernews
 
-A hacker-news webapp. The main purpose for this app is to get familiar with React/Redux.
+A hacker-news webapp with an option to refresh every 30 second.
+The main purpose for this app is to get familiar with React/Redux.
 
 ##Build with
 - Babel 6
