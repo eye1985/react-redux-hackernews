@@ -1,7 +1,7 @@
 import React,{Component} from 'react';
 import {connect} from 'react-redux';
 
-export default class ProgressBar extends Component {
+class ProgressBar extends Component {
     // let progressBar = (isFetching)?<ProgressBar />:undefined;
     render() {
         const {isFetching,isFailed,isComplete} = this.props.fetchStatus;
