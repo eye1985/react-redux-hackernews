@@ -16,4 +16,5 @@ The main purpose for this app is to get familiar with React/Redux.
 `npm i`  
 `npm start`
 
-[Demo](https://vivid-heat-6972.firebaseapp.com/)
+[Demo (Firebase)](https://vivid-heat-6972.firebaseapp.com/)
+[Demo](https://eye1985.github.io/react-redux-hackernews/)
